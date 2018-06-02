@@ -1,0 +1,69 @@
+# index reference genome
+bwa index a.th.fa 
+
+# Perform the alignment
+bwa mem a.th.fa read190.fq > 192.sam 
+
+#validate sam.file 
+java -jar picard.jar ValidateSamFile I= 192.sam MODE=SUMMARY
+
+#fix the errors by ignoring warnings 
+java -jar picard.jar ValidateSamFile I=192.sam IGNORE_WARNINGS=true MODE=VERBOSE 
+
+# AddReadGroup
+java -jar picard.jar AddOrReplaceReadGroups I=192.sam O=192rg.sam RGID=192 RGLB=192 RGPL=illumina RGPU=192 RGSM=192 
+
+#Convert SAM to BAM for sorting
+samtools view -S -b 192rg.sam > 192.bam 
+# to merge all RAD-Seq for mutiple samples
+samtools merge 192.bam ....384.bam > merged.bam 
+
+# Methods for Sorting and indexing BAM for SNP calling
+samtools sort merged.bam > sorted.bam 
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/picard.jar SortSam I=merged.bam O=sortall SORT_ORDER=coordinate CREATE_INDEX=true
+samtools index merged.bam # to create bam.bai file
+samtools faidx a.th.fa #Index the genome assembly
+
+#Steps for calling SNPs by run SAMTools mpileup' to generate VCF format
+samtools mpileup -g -f a.th.fa sorted.bam > raw.bcf
+
+# Call SNPs
+bcftools call -mv raw.bcf > var.bcf
+bcftools view var.bcf > var.vcf
+
+# for filtering data by SAMTools
+bcftools filter -s LowQual -e '%MQ<57.4' var.vcf  > SAM_filtered.vcf 
+
+# Using GATK in order to refine BAM.file
+
+# VCF.file from HaplotypeCaller with joint genotypes
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T RealignerTargetCreator -R a.th.fa -I sorted.bam -known hg.vcf -realigner.intervals 
+
+# then indelrealignment should be applied
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T IndelRealigner -R a.th.fa -I sorted.bam -known hg.vcf -targetIntervals realigner.intervals -o realigned.bam
+
+# Calling varaints by GATK:
+
+# by UnifiedGenotyper function 
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T UnifiedGenotyper -R a.th.fa -I realigned.bam -o ucall.vcf -glm BOTH   
+
+# by HaplotypeCaller for each sample
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T HaplotypeCaller -R a.th.fa  -I sorted192.bam -V 192.g.vcf -ERC GVCF --pair_hmm_implementation LOGLESS_CACHING
+
+# then Joint Genotypes
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T GenotypeGVCFs -R a.th.fa -V  192.g.vcf -V 193.g.vcf ......-V 384.g.vcf -o HG.vcf
+
+#  Extract the SNPs from the call set
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T SelectVariants -R a.th.fa -V ucall.vcf -selectType SNP -o u_snps.vcf
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -R a.th.fa -T  VariantsToTable -V ucall.vcf -F CHROM -F POS -F QUAL -F ExcessHet -F FS -F MQ -F MQRankSum -F QD -F ReadPosRankSum -F SOR -F BaseQualityRankSum -F HaplotypeScore --all356387f7ed9e1a8247bfd67898971637df214716owMissingData -o U_table.csv
+356387f7ed9e1a8247bf356387f7ed9e1a8247bfd67898971637df214716d67898971637df214716
+
+# Hard-Filtering  by GATK performing VariantFiltration function 
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T VariantFiltration -R a.th.fa -V newuf_snp.vcf --filterExpression "QD < 2.0 || ExcessHet > 8.0 ||  FS > 45.0 || MQ < 58.0 || MQRankSum < -12.5 || ReadPosRankSum < -16.0 || BaseQualityRankSum < -8.0 || SOR > 3.0 || HaplotypeScore > 13.0"  --filterName "my_snp_filter"  -o fiteredsnpu.vcf
+
+# OnlY SNPs which have been PASSED
+java -jar /biodata/dep_tsiantis/grp_gan/begali/thesis/GATK/GenomeAnalysisTK.jar -T SelectVariants -R a.th.fa -V fiteredsnpu.vcf -select 'vc.isNotFiltered()'  -o snp.passedu.vcf
+
+#Computing Chi-Square test and P-HWE for each SNP on the chromosome
+vcftools --vcf snp.passedu.vcf --hardy --out U_HWE.csv
+

@@ -1,0 +1,50 @@
+# An Example for Plotting density distribution for one annotation in order to perform Hard-Filtering in R-Program : 
+
+one_plot_density <- function(x,max.lim,div_by,col.name,col.num){  # creating the function which takes five parameters only for one plotting.
+  d<-density(x[ ,col.num]) # x indicates density for data and the number of target column that contains  the value score for this annotation. 
+  plot(d,xlim=c(-5,max.lim),xaxt='n',col='blue',main = paste0(col.name,' Density'),xlab = paste0(col.name,' values'))
+  axis(1, at = seq(-5, max.lim, by = div_by), las=2)
+} # drawing x axis which represent the value score for this annotation for all SNPs and y axis refers to its density, frequency in this data.
+
+# for only SNPs_file
+x<- read.csv('u.csv') # open and read file 
+one_plot_density(x,44,2,"QD",9) # calling function with unique parameters which have to be inserted.
+min(x$QD) # to examine minimum value score
+max(x$QD) # to examine maximum value score 
+
+
+
+# Multiple Plotting for critical values , Chi-Square test, which have been computed by VCFTools by four different algorithms. 
+multi_plot <- function(mydata1,mydata2,mydata3,mydata4,max.lim,divideby,col.name,col.num){ # function here will plot multiple values for four data that take eight parameters.
+  d<-density(mydata1[,col.num]) # mydata 1 indicates density for the first data that obtain by first procedures
+  plot(d,xlim=c(0,max.lim),xaxt='n',col='dark red',main = paste0(col.name,' Density'),xlab = paste0(col.name,' values'))
+  axis(1, at = seq(0, max.lim, by = divideby), las=2)
+  lines(density(mydata2[,col.num]),col='dark green') # for 2nd data
+  lines(density(mydata3[,col.num]),col='dark blue') # for third data
+  lines(density(mydata4[,col.num]),col='dark orange') # for fourth data
+}
+
+mydata1<- read.csv('chiu.csv') # reads all Chi-Square value in data1.
+mydata2<- read.csv('chis.csv') # reads ll Chi-Square value in data2.
+mydata3<- read.csv('chisr.csv') # reads ll Chi-Square value in data 3.
+mydata4<- read.csv('chihg.csv') # reads ll Chi-Square value in data 4.
+
+multi_plot(mydata1,mydata2,mydata3,mydata4,10,0.96,"Chi-Square values",1)# calling function with unique parameters which have to be inserted for
+#maximum value and divide x axis by 0.96 , 1 indicates the col number
+
+
+
+#P-value
+
+mydata1<- read.csv('P-U.csv') # reads all P-value  in data1.
+mydata2<- read.csv('P-S.csv') # reads all P-value  value in data1.
+mydata3<- read.csv('P-Sr.csv') # reads all P-value  value in data1.
+mydata4<- read.csv('P-hg.csv') # reads all P-value  value in data1.
+
+# histogram fun will takes the parameters of name of data and target col, main indicates the name of algorithm has been performed in order to compute P-HWE values by VCFTools.
+
+hist(mydata1$P_HWE,col = 'red',xlab = "P-value",main = "UnifiedGenotyper") 
+hist(mydata2$P_HWE,col = 'blue',xlab = "P-value",main = "SAMTools mpileup")
+hist(mydata3$P_HWE,col = 'green',xlab = "P-value",main = "Refinement SAMTools mpileup")
+hist(mydata4$P_HWE,col = 'orange',xlab = "P-value",main = "Haplotypecaller with joint genotyping ")
+
