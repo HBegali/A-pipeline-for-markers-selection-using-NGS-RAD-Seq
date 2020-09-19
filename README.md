@@ -1,4 +1,4 @@
-# A-pipeline-for-markers-selection-using-Restriction-site-Associated-DNA-sequencing-RAD-Seq- April 2017-Sep 2017
+# A-pipeline-for-markers-selection-using-Restriction-site-Associated-DNA-sequencing-RAD-Seq
 Master_thesis Project  
 
 {Abstract}
