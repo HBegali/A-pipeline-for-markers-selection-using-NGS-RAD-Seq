@@ -1,0 +1,147 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix improvit: <http://www.project-improvit.de/vocab/> .
+@base <http://www.project-improvit.de/> .
+
+<http://www.project-improvit.de/> rdf:type owl:Ontology .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+###  http://purl.org/dc/elements/1.1/date
+<http://purl.org/dc/elements/1.1/date> rdf:type owl:AnnotationProperty .
+
+
+###  http://www.w3.org/2004/02/skos/core#comment
+<http://www.w3.org/2004/02/skos/core#comment> rdf:type owl:AnnotationProperty .
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.project-improvit.de/vocab/Person
+improvit:Person rdf:type owl:Class ;
+               <http://purl.org/dc/elements/1.1/date> "2022-07-27T00:00:00"@en ;
+               rdfs:comment "This class represents a person who is a human being."@en ;
+               rdfs:isDefinedBy "Hanan"@en ;
+               rdfs:label "Person"@en ;
+               owl:versionInfo "v1.0"@en .
+
+###  http://www.project-improvit.de/vocab/Annotation
+improvit:Annotation rdf:type owl:Class ;
+                   <http://purl.org/dc/elements/1.1/date> "2022-07-29T00:00:00"@en ;
+                   rdfs:comment "This class represents the concept of linking entity mentions (in our case mostly biological terminologies) with their background knowledge by exploiting external knowledge bases e.g. UMLS, DBpedia, Wikidata, etc."@en ;
+                   rdfs:isDefinedBy "Hanan"@en ;
+                   rdfs:label "Annotation"@en ;
+                   owl:versionInfo "v1.0"@en .
+
+
+#    Data properties
+
+#################################################################
+###  http://www.project-improvit.de/vocab/hasPersonID
+improvit:hasPersonID rdf:type owl:DatatypeProperty ;
+                     rdfs:subPropertyOf owl:topDataProperty ;
+                     rdfs:domain improvit:Person ;
+                     rdfs:range xsd:string ;
+                     <http://purl.org/dc/elements/1.1/date> "2022-07-27T00:00:00"@en ;
+                     rdfs:comment "This attribute represents the unique identification number of a person, which was given for the participation in a particular study"@en ;
+                     rdfs:isDefinedBy "Hanan"@en ;
+                     rdfs:label "hasPersonID"@en ;
+                     owl:versionInfo "v1.0"@en .
+
+###  http://www.project-improvit.de/vocab/hasSex
+improvit:hasSex rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain improvit:Person ;
+                rdfs:range xsd:string ;
+                <http://purl.org/dc/elements/1.1/date> "2022-07-27T00:00:00"@en ;
+                rdfs:comment "This attribute represents the sexual definition of the person"@en ;
+                rdfs:isDefinedBy "Hanan"@en ;
+                rdfs:label "hasSex"@en ;
+                owl:versionInfo "v1.0"@en.
+
+###  http://www.project-improvit.de/vocab/hasAnnotationCUI
+improvit:hasAnnotationCUI rdf:type owl:DatatypeProperty ;
+                          rdfs:subPropertyOf owl:topDataProperty ;
+                          rdfs:domain improvit:Annotation ;
+                          rdfs:range xsd:string ;
+                          <http://purl.org/dc/elements/1.1/date> "2022-07-27T00:00:00"@en ;
+                          rdfs:comment "This attribute represents the annotation ID of terms in UMLS."@en ;
+                          rdfs:isDefinedBy "Hanan"@en ;
+                          rdfs:label "hasAnnotationCUI"@en ;
+                          owl:versionInfo "v1.0"@en .
+
+###  http://www.project-improvit.de/vocab/hasAge
+improvit:hasAge rdf:type owl:DatatypeProperty ;
+                rdfs:subPropertyOf owl:topDataProperty ;
+                rdfs:domain improvit:Person ;
+                rdfs:range xsd:nonNegativeInteger ;
+                <http://purl.org/dc/elements/1.1/date> "2022-07-28T00:00:00"@en ;
+                rdfs:comment "This attribute represents the age of the person."@en ;
+                rdfs:isDefinedBy "Hanan"@en ;
+                rdfs:label "hasAge"@en ;
+                owl:versionInfo "v1.0"@en.
+
+###  http://www.project-improvit.de/vocab/hasAgeUnit
+improvit:hasAgeUnit rdf:type owl:DatatypeProperty ;
+                    rdfs:subPropertyOf owl:topDataProperty ;
+                    rdfs:domain improvit:Person ;
+                    rdfs:range xsd:string ;
+                    <http://purl.org/dc/elements/1.1/date> "2022-07-28T00:00:00"@en ;
+                    rdfs:comment "This attribute represents the unit of the person's age."@en ;
+                    rdfs:isDefinedBy "Hanan"@en ;
+                    rdfs:label "hasAgeUnit"@en.
+
+
+###  http://www.project-improvit.de/vocab/hasAgeDescription
+improvit:hasAgeUnit rdf:type owl:DatatypeProperty ;
+                  rdfs:subPropertyOf owl:topDataProperty ;
+                  rdfs:domain improvit:Person;
+                  rdfs:range xsd:string ;
+                  <http://purl.org/dc/elements/1.1/date> "2022-07-28T00:00:00"@en ;
+                  rdfs:comment "This attribute represents the description of the person's age."@en ;
+                  rdfs:isDefinedBy "Hanan"@en ;
+                  rdfs:label "hasAgeDescription"@en.
+
+###  http://www.project-improvit.de/vocab/hasBaselineVisitDay
+improvit:hasBaselineVisitDay rdf:type owl:DatatypeProperty ;
+                                 rdfs:subPropertyOf owl:topDataProperty ;
+                                 rdfs:domain improvit:Donate ;
+                                 rdfs:range xsd:date ;
+                                 <http://purl.org/dc/elements/1.1/date> "2022-07-29T00:00:00"@en ;
+                                 rdfs:comment "This attribute represents the day baseline of the visit when donated PBMCs cells were frozen."@en ;
+                                 rdfs:isDefinedBy "Hanan"@en ;
+                                 rdfs:label "hasBaselineVisitDay"@en ;
+                                 owl:versionInfo "v1.0"@en .
+
+
+###  http://www.project-improvit.de/vocab/hasBaselineVisitMonth
+improvit:hasBaselineVisitMonth rdf:type owl:DatatypeProperty ;
+                                   rdfs:subPropertyOf owl:topDataProperty ;
+                                   rdfs:domain improvit:Donate ;
+                                   rdfs:range xsd:date ;
+                                   <http://purl.org/dc/elements/1.1/date> "2022-07-29T00:00:00"@en ;
+                                   rdfs:comment "This attribute represents the month baseline of the visit when donated PBMCs cells were frozen."@en ;
+                                   rdfs:isDefinedBy "Hanan"@en ;
+                                   rdfs:label "hasBaselineVisitMonth"@en ;
+                                   owl:versionInfo "v1.0"@en .
+
+###  http://www.project-improvit.de/vocab/hasBaselineVisitYear
+improvit:hasBaselineVisitYear rdf:type owl:DatatypeProperty ;
+                                  rdfs:subPropertyOf owl:topDataProperty ;
+                                  rdfs:domain improvit:Donate ;
+                                  rdfs:range xsd:date ;
+                                  rdfs:comment "This attribute represents the year baseline of the visit when donated PBMCs cells were frozen."@en ;
+                                  rdfs:isDefinedBy "Hanan"@en ;
+                                  rdfs:label "hasBaselineVisitYear"@en ;
+                                  owl:versionInfo "v1.0"@en .
+
+.
+
+
+###  Generated by the OWL API (version 4.5.13) https://github.com/owlcs/owlapi
