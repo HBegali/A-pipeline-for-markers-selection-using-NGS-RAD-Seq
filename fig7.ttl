@@ -1,0 +1,36 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX improvit: <http://www.project-improvit.de/vocab/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT DISTINCT ?donorID ?ageD0 ?sex ?parameterID ?measurementValue
+{
+    ?parameterID rdf:type improvit:Parameter .
+    FILTER (?parameterID = <http://www.project-improvit.de/Parameter/HBsAg> ||
+    ?parameterID = <http://www.project-improvit.de/Parameter/CD19neg_CD14neg_CD3pos_CD4pos_IFNypos>)
+    ?parameterID improvit:parameterLeadsToResults ?leadsToResultsId .
+    ?leadsToResultsId rdf:type improvit:LeadsToResults .
+    ?leadsToResultsId improvit:hasPersonID ?donorID .
+    ?leadsToResultsId improvit:measurementLeadsToResults ?measurementIds .
+    ?measurementIds rdf:type improvit:Measurement .
+    ?measurementIds improvit:hasBiosampleDayDescription <http://www.project-improvit.de/Donate/Day0>.
+    ?measurementIds improvit:hasExpProtocolName ?expProtocolName .
+    FILTER (?expProtocolName = <http://www.project-improvit.de/ExperimentalProtocol/Measurement_Of_HBsAg_Level>
+    || ?expProtocolName = <http://www.project-improvit.de/ExperimentalProtocol/P10DC_ICS_Total_OLP_T_cell_Panel>)
+    ?measurementIds improvit:hasMeasurementValue ?measurementValue .
+    ?measurementIds improvit:hasMeasurementDescription ?measurementDescription .
+    ?measurementIds improvit:hasMeasurementCategorization ?measurementCategorization .
+    ?measurementIds improvit:hasMeasurementValueUnit ?measurementValueUnit .
+    ?measurementIds improvit:hasNormalRangeOfValue ?normalRangeOfValue .
+    ?measurementIds improvit:hasImmuneResponse ?immuneResponse .
+    ?donorID rdf:type improvit:Donor .
+    ?donorID owl:sameAs ?personID .
+    ?personID rdf:type improvit:Person .
+    ?personID improvit:hasSex ?sex .
+    ?personID improvit:hasAge ?ageD0 .
+    ?personID improvit:hasBaselineVisitDay ?DO_day .
+    ?personID improvit:hasBaselineVisitMonth ?DO_month .
+    ?personID improvit:hasBaselineVisitYear ?DO_year .
+
+}
+ORDER BY ?donorID

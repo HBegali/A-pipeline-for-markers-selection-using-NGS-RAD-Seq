@@ -1,0 +1,12 @@
+#TotalMapping rules in HBsRE-KG
+select (sum(?triples) as ?total ) where {
+select distinct ?c1 (count(distinct ?o1)+1 as ?triples)
+where {
+       ?s <http://semweb.mmlab.be/ns/rml#logicalSource> ?c.
+       ?s <http://www.w3.org/ns/r2rml#subjectMap> ?o.
+       ?o <http://www.w3.org/ns/r2rml#class> ?c1 .
+            OPTIONAL {?s <http://www.w3.org/ns/r2rml#predicateObjectMap> ?o1 .
+                     ?o1 <http://www.w3.org/ns/r2rml#predicate> ?o4}
+      } GROUP BY ?c1
+         ORDER BY DESC(?triples)
+}

@@ -1,0 +1,14 @@
+# Count instances (entities at subject position) per class in HBsRE-KG:
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX improvit:<http://www.project-improvit.de/vocab/>
+PREFIX rr: <http://www.w3.org/ns/r2rml#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX onto: <http://www.ontotext.com/>
+#4_Count_Instacnes_of_each_Classes
+SELECT ?Class ( count(distinct ?instances)  as ?TotalInstacesofClass) where
+   { ?instances a ?Class.  }
+
+GROUP BY ?Class
+ORDER BY DESC(?TotalInstacesofClass)

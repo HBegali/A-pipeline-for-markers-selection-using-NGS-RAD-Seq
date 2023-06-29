@@ -1,0 +1,43 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX improvit: <http://www.project-improvit.de/vocab/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+SELECT DISTINCT ?patientURI ?ageD0 ?sex ?parameterURI ?measurementValue ?measurementDescription ?measurementCategorization
+ ?functionalCureLabel ?drug ?drugname ?pharmaceuticalPreparationName ?studyName
+{
+   ?parameterURI rdf:type improvit:Parameter .
+   FILTER (?parameterURI = <http://www.project-improvit.de/Parameter/HBsAg> )
+   ?parameterURI improvit:parameterLeadsToResults ?leadsToResultsURI .
+   ?leadsToResultsURI rdf:type improvit:LeadsToResults .
+  ?leadsToResultsURI improvit:hasPersonID ?patientURI .
+  ?leadsToResultsURI improvit:measurementLeadsToResults ?measurementURI .
+  ?measurementURI rdf:type improvit:Measurement .
+  ?measurementURI improvit:hasBiosampleDayDescription  ?biosampleDayDescription.
+   ?measurementURI improvit:hasMeasurementValue ?measurementValue .
+   ?measurementURI improvit:hasMeasurementDescription ?measurementDescription .
+   ?measurementURI improvit:hasMeasurementCategorization ?measurementCategorization .
+   ?measurementURI improvit:hasMeasurementValueUnit ?measurementValueUnit .
+   ?measurementURI improvit:hasNormalRangeOfValue ?normalRangeOfValue .
+  ?measurementURI improvit:hasFunctionalCureLabel ?functionalCureLabel .
+?patientURI rdf:type improvit:Donor .
+ ?patientURI owl:sameAs ?personURI .
+   ?personURI rdf:type improvit:Person .
+    FILTER (
+    ?personURI = <http://www.project-improvit.de/Person/HBsRE_6>     || ?personURI = <http://www.project-improvit.de/Person/HBsRE_8>
+    || ?personURI = <http://www.project-improvit.de/Person/HBsRE_11> || ?personURI = <http://www.project-improvit.de/Person/HBsRE_14>
+    || ?personURI = <http://www.project-improvit.de/Person/HBsRE_38> || ?personURI = <http://www.project-improvit.de/Person/HBsRE_42>
+    || ?personURI = <http://www.project-improvit.de/Person/HBsRE_45> || ?personURI = <http://www.project-improvit.de/Person/HBsRE_46>
+    || ?personURI = <http://www.project-improvit.de/Person/HBsRE_52> || ?personURI = <http://www.project-improvit.de/Person/HBsRE_56>
+    || ?personURI = <http://www.project-improvit.de/Person/HBsRE_57> || ?personURI = <http://www.project-improvit.de/Person/HBsRE_60>
+    || ?personURI = <http://www.project-improvit.de/Person/HBsRE_65> || ?personURI = <http://www.project-improvit.de/Person/HBsRE_80>
+    ).
+   ?personURI improvit:hasSex ?sex .
+   ?personURI improvit:hasAge ?ageD0 .
+   ?personURI improvit:hasBaselineVisitDay ?DO_day .
+   ?personURI improvit:hasBaselineVisitMonth ?DO_month .
+   ?personURI improvit:hasBaselineVisitYear ?DO_year .
+   ?patientURI improvit:participate ?studyName.
+
+}
+ ORDER BY ?patientURI
